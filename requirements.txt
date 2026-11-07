@@ -1,0 +1,6 @@
+scikit-learn
+deepface
+opencv-contrib-python<5.0.0
+numpy
+Pillow
+python-dotenv
