@@ -25,3 +25,14 @@ OpenCV License: https://opencv.org/license/
 All applicable copyright notices and license conditions are retained in the original file.
 
 OpenCV is a third-party project and is not affiliated with or endorsing this software.
+
+## Disclaimer
+
+This software is provided "as is", without warranty of any kind, 
+express or implied.
+
+The developer is not responsible for any misuse of this software 
+or for any damages resulting from its use.
+
+Users are solely responsible for ensuring that their use of this 
+software complies with all applicable laws and regulations.
