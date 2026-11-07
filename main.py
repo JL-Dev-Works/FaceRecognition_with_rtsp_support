@@ -11,12 +11,14 @@ from deepface import DeepFace
 
 load_dotenv()
 
-SOURCE_MODE = "rtsp"  # "video" of "rtsp"
+# Kies: "webcam", "video" of "rtsp"
+SOURCE_MODE = "webcam"
 
+CAMERA_ID = 0
 VIDEO_PATH = "test_video.mp4"
 
 ANALYSE_INTERVAL = 2
-RECOGNITION_THRESHOLD = 70
+RECOGNITION_THRESHOLD = 80
 
 CASCADE_PATH = "haarcascade_frontalface_default.xml"
 MODEL_PATH = "trainer/trainer.yml"
@@ -33,15 +35,13 @@ def get_rtsp_url():
 
     if not all([host, username, password]):
         raise RuntimeError(
-            "RTSP-configuratie ontbreekt in het .env-bestand!"
+            "RTSP-configuratie ontbreekt in .env!"
         )
 
     username = quote(username, safe="")
     password = quote(password, safe="")
 
-    return (
-        f"rtsp://{username}:{password}@{host}:{port}/{stream}"
-    )
+    return f"rtsp://{username}:{password}@{host}:{port}/{stream}"
 
 
 
@@ -71,18 +71,27 @@ print("Namen:", names)
 
 
 
-if SOURCE_MODE == "video":
+if SOURCE_MODE == "webcam":
+    camera = cv2.VideoCapture(CAMERA_ID)
+
+elif SOURCE_MODE == "video":
     camera = cv2.VideoCapture(VIDEO_PATH)
+
 elif SOURCE_MODE == "rtsp":
-    rtsp_url = get_rtsp_url()
-    camera = cv2.VideoCapture(rtsp_url, cv2.CAP_FFMPEG)
+    camera = cv2.VideoCapture(
+        get_rtsp_url(),
+        cv2.CAP_FFMPEG
+    )
+
 else:
-    raise ValueError("SOURCE_MODE moet 'video' of 'rtsp' zijn!")
+    raise ValueError(
+        "SOURCE_MODE moet webcam, video of rtsp zijn!"
+    )
 
 if not camera.isOpened():
     raise RuntimeError("Kan de videobron niet openen!")
 
-print("Videobron gestart!")
+print(f"Videobron gestart: {SOURCE_MODE}")
 print("Face Analysis gestart. Druk op Q om te stoppen.")
 
 
@@ -103,6 +112,7 @@ data = {
 
 try:
     while True:
+
         ret, frame = camera.read()
 
         if not ret:
@@ -125,6 +135,8 @@ try:
         )
 
         if len(faces) > 0:
+
+            # Grootste gezicht selecteren
             x, y, w, h = max(
                 faces,
                 key=lambda face: face[2] * face[3]
@@ -136,9 +148,11 @@ try:
             huidige_tijd = time.time()
 
             if huidige_tijd - laatste_analyse >= ANALYSE_INTERVAL:
+
                 print("Gezicht analyseren...")
 
-                # PERSOON HERKENNEN
+
+
                 label, confidence = recognizer.predict(face_gray)
 
                 recognized = (
@@ -148,7 +162,8 @@ try:
 
                 person = names[label] if recognized else "Unknown"
 
-                # DEEPFACE ANALYSE
+
+
                 try:
                     result = DeepFace.analyze(
                         img_path=face_color,
@@ -168,7 +183,8 @@ try:
                     age = None
                     emotion = None
 
-                # JSON OPBOUWEN
+
+
                 data = {
                     "face_detected": True,
                     "person": person,
@@ -177,7 +193,8 @@ try:
                     "age": age,
                     "emotion": emotion,
                     "status": (
-                        "recognized" if recognized
+                        "recognized"
+                        if recognized
                         else "unknown_person"
                     )
                 }
@@ -188,7 +205,7 @@ try:
 
                 laatste_analyse = huidige_tijd
 
-            # WEERGAVE
+
             color = (
                 (0, 255, 0)
                 if data["recognized"]
@@ -244,7 +261,6 @@ try:
                 "status": "no_face"
             }
 
-        # STATUS
         cv2.putText(
             frame,
             data["status"],
@@ -257,6 +273,7 @@ try:
 
         cv2.imshow("Face Analysis", frame)
 
+        # Stoppen met Q
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
