@@ -3,7 +3,7 @@ from deepface import DeepFace
 import cv2
 
 # Testafbeelding laden
-image = cv2.imread("test.png")
+image = cv2.imread("test.jpg")
 
 if image is None:
     print("Afbeelding test.jpg niet gevonden!")

@@ -6,3 +6,5 @@ trainer/
 
 __pycache__/
 *.pyc
+
+download_dataset.py
