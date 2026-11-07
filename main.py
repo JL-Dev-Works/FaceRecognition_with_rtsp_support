@@ -12,10 +12,10 @@ from deepface import DeepFace
 load_dotenv()
 
 # Kies: "webcam", "video" of "rtsp"
-SOURCE_MODE = "webcam"
+SOURCE_MODE = "video"
 
 CAMERA_ID = 0
-VIDEO_PATH = "test_video.mp4"
+VIDEO_PATH = os.getenv("TESTMEDIA")
 
 ANALYSE_INTERVAL = 2
 RECOGNITION_THRESHOLD = 80
