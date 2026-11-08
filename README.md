@@ -3,6 +3,7 @@
 Before training you will need a dataset to actually train on.
 The code expects a folder 'dataset' with subfolders like 'person1' wich need to contain .jpg files of that person
 for example:
+```
 dataset
 |
 |-- 'person1'
@@ -16,7 +17,7 @@ dataset
        |-- 'person2.jpg'
        |-- 'person2_2.jpg'
        |-- 'person2_3.jpg'
-
+```
 You get the idea.
 
 ## .env file
@@ -27,6 +28,7 @@ The .env file needs to contain the following information for usage of certain fu
 - RTSP_USERNAME=
 - RTSP_PASSWORD=
 - RTSP_STREAM=
+
 
 - TESTMEDIA="PATH/TO/MEDIA/FILE"
 
