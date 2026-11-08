@@ -6,19 +6,24 @@ import json
 from urllib.parse import quote
 from dotenv import load_dotenv
 from deepface import DeepFace
+from screenshot_manager import save_screenshot
+from config import SOURCE_MODE, ANALYSE_INTERVAL, RECOGNITION_THRESHOLD
+
+
+
 
 
 
 load_dotenv()
 
 # Kies: "webcam", "video" of "rtsp"
-SOURCE_MODE = "video"
+SOURCE_MODE = SOURCE_MODE
 
 CAMERA_ID = 0
 VIDEO_PATH = os.getenv("TESTMEDIA")
 
-ANALYSE_INTERVAL = 2
-RECOGNITION_THRESHOLD = 80
+ANALYSE_INTERVAL = ANALYSE_INTERVAL
+RECOGNITION_THRESHOLD = RECOGNITION_THRESHOLD
 
 CASCADE_PATH = "haarcascade_frontalface_default.xml"
 MODEL_PATH = "trainer/trainer.yml"
@@ -270,6 +275,8 @@ try:
             (0, 255, 255),
             2
         )
+
+        save_screenshot(frame, data)
 
         cv2.imshow("Face Analysis", frame)
 
